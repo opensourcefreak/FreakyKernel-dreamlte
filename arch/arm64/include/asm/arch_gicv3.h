@@ -106,6 +106,7 @@ static inline u64 gic_read_iar_common(void)
 	dsb(sy);
 	
 	/* As per the architecture specification */
+	isb();
 	mb();
 	return irqstat;
 }
@@ -136,6 +137,7 @@ static inline void gic_write_pmr(u32 val)
 {
 	asm volatile("msr_s " __stringify(ICC_PMR_EL1) ", %0" : : "r" ((u64)val));
 	/* As per the architecture specification */
+	isb();
 	mb();
 }
 
@@ -155,6 +157,7 @@ static inline void gic_write_sgi1r(u64 val)
 {
 	asm volatile("msr_s " __stringify(ICC_SGI1R_EL1) ", %0" : : "r" (val));
 	/* As per the architecture specification */
+	isb();
 	mb();
 }
 
