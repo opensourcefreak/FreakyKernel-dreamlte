@@ -106,7 +106,6 @@ static inline u64 gic_read_iar_common(void)
 	dsb(sy);
 	
 	/* As per the architecture specification */
-	isb();
 	mb();
 	return irqstat;
 }
