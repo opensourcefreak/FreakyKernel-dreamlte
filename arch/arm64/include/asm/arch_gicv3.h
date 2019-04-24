@@ -88,13 +88,19 @@
 
 static inline void gic_write_eoir(u32 irq)
 {
-	asm volatile("msr_s " __stringify(ICC_EOIR1_EL1) ", %0" : : "r" ((u64)irq));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_EOIR1_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" ((u64)irq));
 	isb();
 }
 
 static inline void gic_write_dir(u32 irq)
 {
-	asm volatile("msr_s " __stringify(ICC_DIR_EL1) ", %0" : : "r" ((u64)irq));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_DIR_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" ((u64)irq));
 	isb();
 }
 
@@ -102,7 +108,11 @@ static inline u64 gic_read_iar_common(void)
 {
 	u64 irqstat;
 
-	asm volatile("mrs_s %0, " __stringify(ICC_IAR1_EL1) : "=r" (irqstat));
+	asm volatile(
+		DEFINE_MRS_S
+		"mrs_s %0, " __stringify(ICC_IAR1_EL1) DEFINE_MRS_S
+		UNDEFINE_MRS_S
+		: "=r" (irqstat));
 	dsb(sy);
 	
 	/* As per the architecture specification */
@@ -124,7 +134,9 @@ static inline u64 gic_read_iar_cavium_thunderx(void)
 	asm volatile(
 		"nop;nop;nop;nop\n\t"
 		"nop;nop;nop;nop\n\t"
+		DEFINE_MRS_S
 		"mrs_s %0, " __stringify(ICC_IAR1_EL1) "\n\t"
+		UNDEFINE_MRS_S
 		"nop;nop;nop;nop"
 		: "=r" (irqstat));
 	mb();
@@ -134,7 +146,10 @@ static inline u64 gic_read_iar_cavium_thunderx(void)
 
 static inline void gic_write_pmr(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_PMR_EL1) ", %0" : : "r" ((u64)val));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_PMR_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" ((u64)val));
 	/* As per the architecture specification */
 	isb();
 	mb();
@@ -142,19 +157,28 @@ static inline void gic_write_pmr(u32 val)
 
 static inline void gic_write_ctlr(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_CTLR_EL1) ", %0" : : "r" ((u64)val));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_CTLR_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" ((u64)val));
 	isb();
 }
 
 static inline void gic_write_grpen1(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_GRPEN1_EL1) ", %0" : : "r" ((u64)val));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_GRPEN1_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" ((u64)val));
 	isb();
 }
 
 static inline void gic_write_sgi1r(u64 val)
 {
-	asm volatile("msr_s " __stringify(ICC_SGI1R_EL1) ", %0" : : "r" (val));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_SGI1R_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" (val));
 	/* As per the architecture specification */
 	isb();
 	mb();
@@ -164,13 +188,19 @@ static inline u32 gic_read_sre(void)
 {
 	u64 val;
 
-	asm volatile("mrs_s %0, " __stringify(ICC_SRE_EL1) : "=r" (val));
+	asm volatile(DEFINE_MRS_S
+		"mrs_s %0, " __stringify(ICC_SRE_EL1) "\n"
+		UNDEFINE_MRS_S
+		: "=r" (val));
 	return val;
 }
 
 static inline void gic_write_sre(u32 val)
 {
-	asm volatile("msr_s " __stringify(ICC_SRE_EL1) ", %0" : : "r" ((u64)val));
+	asm volatile(DEFINE_MSR_S
+		"msr_s " __stringify(ICC_SRE_EL1) ", %0\n"
+		UNDEFINE_MSR_S
+		: : "r" ((u64)val));
 	isb();
 }
 
