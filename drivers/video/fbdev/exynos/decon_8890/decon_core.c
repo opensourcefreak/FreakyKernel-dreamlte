@@ -46,6 +46,8 @@
 #include "../../../../soc/samsung/pwrcal/S5E8890/S5E8890-vclk.h"
 #include "../../../../kernel/irq/internals.h"
 
+#include <soc/samsung/exynos-cpu_hotplug.h>
+
 #ifdef CONFIG_MACH_VELOCE8890
 #define DISP_SYSMMU_DIS
 #define DISP_PWR_CLK_CTRL_DIS
@@ -982,6 +984,8 @@ int decon_enable(struct decon_device *decon)
 	int state = decon->state;
 	int ret = 0;
 
+	exynos_cpu_hotplug_update_suspend(false);
+
 	decon_dbg("enable decon-%d\n", decon->id);
 	exynos_ss_printk("%s:state %d: active %d:+\n", __func__,
 				decon->state, pm_runtime_active(decon->dev));
@@ -1130,6 +1134,8 @@ int decon_disable(struct decon_device *decon)
 	int ret = 0;
 	unsigned long irq_flags;
 	int state = decon->state;
+
+	exynos_cpu_hotplug_update_suspend(true);
 
 	exynos_ss_printk("disable decon-%d, state(%d) cnt %d\n", decon->id,
 				decon->state, pm_runtime_active(decon->dev));

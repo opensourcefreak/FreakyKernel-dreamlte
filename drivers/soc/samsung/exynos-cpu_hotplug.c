@@ -285,6 +285,26 @@ static int control_cpu_hotplug(bool enable)
 	return ret;
 }
 
+void exynos_cpu_hotplug_update_suspend(bool suspend) {
+	if (!cpu_hotplug.enabled)
+		return;
+
+	lock_device_hotplug();
+
+	int cpu;
+	for_each_cpu(cpu, &hmp_fast_cpu_mask) {
+		if (suspend) {
+			if (cpu_online(cpu))
+				device_offline(get_cpu_device(cpu));
+		} else {
+			if (!cpu_online(cpu))
+				device_online(get_cpu_device(cpu));
+		}
+	}
+
+	unlock_device_hotplug();
+}
+
 /*
  * If PM_QOS_CPU_ONLINE_MIN and PM_QOS_CPU_ONLINE_MAX request is updated,
  * cpu_hotplug_qos_handler is called.

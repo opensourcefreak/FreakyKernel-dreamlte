@@ -15,6 +15,8 @@
 struct kobject *exynos_cpu_hotplug_kobj(void);
 bool exynos_cpu_hotplug_enabled(void);
 
+void exynos_cpu_hotplug_update_suspend(bool suspend);
+
 #ifdef CONFIG_EXYNOS_HOTPLUG_GOVERNOR
 extern void inc_boost_req_count(void);
 extern void dec_boost_req_count(bool delayed_boost);
